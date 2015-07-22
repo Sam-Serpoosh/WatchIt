@@ -1,7 +1,6 @@
 module PaymentTracker where
 
-import Data.Function (on)
-import Data.List (groupBy)
+import Data.List (groupBy, intercalate)
 
 type Threshold = Double
 
@@ -14,6 +13,9 @@ data Payment = Payment { value       :: Double
                        , description :: String
                        } deriving (Show)
 
+chartPixel  = "#"
+emptyString = ""
+
 -- Predefine categories and their threshold which can change
 food           = Cat "food" 200
 transportation = Cat "transportation" 200
@@ -25,6 +27,16 @@ others         = Cat "others" 300
 categories :: [Category]
 categories = [food, transportation, monthlyRoutine, grocery, clothes, others]
 
+-- Keep in mind the percents are approximate so
+-- if they won't add up to 100% it's OK!
+percentPerCategory :: [Payment] -> [(Category, Double)]
+percentPerCategory payments = let total = totalPayment payments
+                                  totalPerCat = totalPerCategory payments
+                              in map (\(cat, val) -> (cat, calcPercent val total)) totalPerCat
+
+presentableChartForCats :: [(Category, Double)] -> [(Category, String)]
+presentableChartForCats = map (\(cat, percent) -> (cat, percentToHashTags percent))
+
 totalPayment :: [Payment] -> Double
 totalPayment payments = sum $ map (\p -> value p) payments
 
@@ -33,14 +45,9 @@ totalPerCategory payments = let groupedByCat = groupBy (\p1 p2 -> (category p1) 
                                 totalPerCat  = map (\pays -> (category . head $ pays, sum $ map value pays)) groupedByCat
                             in totalPerCat
 
--- Keep in mind the percents are approximate so 
--- if they won't add up to 100% it's OK!
-percentPerCategory :: [Payment] -> [(Category, Double)]
-percentPerCategory payments = let total = totalPayment payments
-                                  totalPerCat = totalPerCategory payments
-                              in map (\(cat, val) -> (cat, calcPercent val total)) totalPerCat
-
 calcPercent :: Double -> Double -> Double
 calcPercent val total = let percent = floor $ val / total * 100
                         in (fromIntegral percent :: Double)
 
+percentToHashTags :: Double -> String
+percentToHashTags val = intercalate emptyString $ take (floor $ val / 10) (repeat chartPixel)

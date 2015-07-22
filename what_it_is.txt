@@ -13,7 +13,7 @@ Basic & Initial functionality:
 
   - total payments so far -> DONE
   - chart up based on category -> DONE
-  - chart a particular category and break it down to description
+  - chart a particular category and break it down by description
   - generate warning based on categories and their thresholds
 
 Core functionality input/output

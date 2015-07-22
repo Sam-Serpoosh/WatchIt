@@ -25,8 +25,13 @@ calculatesTotalPerCategory payments expectedTotalPerCat = assertEqual expectedTo
 calculatesPercentPerCategory :: [Payment] -> [(Category, Double)] -> TestResult
 calculatesPercentPerCategory payments expectedPercentPerCat = assertEqual expectedPercentPerCat (percentPerCategory payments)
 
+-- Tests for presentableChartForCats
+shapesPresentableChartData :: [(Category, Double)] -> [(Category, String)] -> TestResult
+shapesPresentableChartData percentByCat expectedCatChart = assertEqual expectedCatChart (presentableChartForCats percentByCat)
+
 main :: IO ()
 main = do
   putStrLn $ show $ calculatesTotalPayment payments 21
   putStrLn $ show $ calculatesTotalPerCategory payments [(food, 10), (transportation, 11)]
   putStrLn $ show $ calculatesPercentPerCategory payments [(food, 47), (transportation, 52)]
+  putStrLn $ show $ shapesPresentableChartData [(food, 47), (transportation, 52)] [(food, "####"), (transportation, "#####")]
