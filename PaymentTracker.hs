@@ -32,3 +32,15 @@ totalPerCategory :: [Payment] -> [(Category, Double)]
 totalPerCategory payments = let groupedByCat = groupBy (\p1 p2 -> (category p1) == (category p2)) payments
                                 totalPerCat  = map (\pays -> (category . head $ pays, sum $ map value pays)) groupedByCat
                             in totalPerCat
+
+-- Keep in mind the percents are approximate so 
+-- if they won't add up to 100% it's OK!
+percentPerCategory :: [Payment] -> [(Category, Double)]
+percentPerCategory payments = let total = totalPayment payments
+                                  totalPerCat = totalPerCategory payments
+                              in map (\(cat, val) -> (cat, calcPercent val total)) totalPerCat
+
+calcPercent :: Double -> Double -> Double
+calcPercent val total = let percent = floor $ val / total * 100
+                        in (fromIntegral percent :: Double)
+
