@@ -6,15 +6,22 @@ import Data.Ord (comparing)
 type Threshold = Double
 
 data Category = Cat String Threshold
-  deriving (Show, Eq, Ord)
+  deriving (Eq, Ord)
+
+instance Show Category where
+  show (Cat name _) = name
 
 data Payment = Payment { value       :: Double
                        , category    :: Category
                        , description :: String
-                       } deriving (Show, Eq)
+                       } deriving (Eq)
+
+instance Show Payment where
+  show payment = description payment ++ " -> " ++ show (value payment) ++ " -> " ++ show (category payment)
 
 chartPixel  = "#"
 emptyString = ""
+
 
 -- Predefine categories and their threshold which can change
 food           = Cat "food" 200
