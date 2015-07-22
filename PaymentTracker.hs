@@ -1,7 +1,12 @@
 module PaymentTracker where
 
-data Category = Cat String Double
-  deriving (Show)
+import Data.Function (on)
+import Data.List (groupBy)
+
+type Threshold = Double
+
+data Category = Cat String Threshold
+  deriving (Show, Eq)
 
 data Payment = Payment { value       :: Double
                        , title       :: String
@@ -23,4 +28,7 @@ categories = [food, transportation, monthlyRoutine, grocery, clothes, others]
 totalPayment :: [Payment] -> Double
 totalPayment payments = sum $ map (\p -> value p) payments
 
-
+totalPerCategory :: [Payment] -> [(Category, Double)]
+totalPerCategory payments = let groupedByCat = groupBy (\p1 p2 -> (category p1) == (category p2)) payments
+                                totalPerCat  = map (\pays -> (category . head $ pays, sum $ map value pays)) groupedByCat
+                            in totalPerCat

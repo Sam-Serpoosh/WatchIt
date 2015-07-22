@@ -16,5 +16,12 @@ payments = [
 calculatesTotalPayment :: [Payment] -> Double -> TestResult
 calculatesTotalPayment payments expectedTotal = assertEqual (totalPayment payments) expectedTotal
 
+-- Tests for totalPerCategory
+
+calculatesTotalPerCategory :: [Payment] -> [(Category, Double)] -> TestResult
+calculatesTotalPerCategory payments expectedTotalPerCat = assertEqual (totalPerCategory payments) expectedTotalPerCat
+
 main :: IO ()
-main = putStrLn $ show $ calculatesTotalPayment payments 21
+main = do
+  putStrLn $ show $ calculatesTotalPayment payments 21
+  putStrLn $ show $ calculatesTotalPerCategory payments [(food, 10), (transportation, 11)]

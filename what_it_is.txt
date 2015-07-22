@@ -12,7 +12,7 @@ Category has a threshold associated with it
 Basic & Initial functionality:
 
   - total payments so far -> DONE
-  - chart up based on category
+  - chart up based on category -> DONE
   - chart a particular category and break it down to description
   - generate warning based on categories and their thresholds
 
