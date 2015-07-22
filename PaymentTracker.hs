@@ -1,17 +1,17 @@
 module PaymentTracker where
 
-import Data.List (groupBy, intercalate)
+import Data.List (sortBy, groupBy, intercalate)
+import Data.Ord (comparing)
 
 type Threshold = Double
 
 data Category = Cat String Threshold
-  deriving (Show, Eq)
+  deriving (Show, Eq, Ord)
 
 data Payment = Payment { value       :: Double
-                       , title       :: String
                        , category    :: Category
                        , description :: String
-                       } deriving (Show)
+                       } deriving (Show, Eq)
 
 chartPixel  = "#"
 emptyString = ""
@@ -31,7 +31,7 @@ categories = [food, transportation, monthlyRoutine, grocery, clothes, others]
 -- if they won't add up to 100% it's OK!
 percentPerCategory :: [Payment] -> [(Category, Double)]
 percentPerCategory payments = let total = totalPayment payments
-                                  totalPerCat = totalPerCategory payments
+                                  totalPerCat = totalPaysPerCategory payments
                               in map (\(cat, val) -> (cat, calcPercent val total)) totalPerCat
 
 presentableChartForCats :: [(Category, Double)] -> [(Category, String)]
@@ -40,10 +40,17 @@ presentableChartForCats = map (\(cat, percent) -> (cat, percentToHashTags percen
 totalPayment :: [Payment] -> Double
 totalPayment payments = sum $ map (\p -> value p) payments
 
-totalPerCategory :: [Payment] -> [(Category, Double)]
-totalPerCategory payments = let groupedByCat = groupBy (\p1 p2 -> (category p1) == (category p2)) payments
-                                totalPerCat  = map (\pays -> (category . head $ pays, sum $ map value pays)) groupedByCat
-                            in totalPerCat
+paymentsPerCategory :: [Payment] -> [(Category, [Payment])]
+paymentsPerCategory payments = let paysByCat = paymentsByCategory payments
+                               in map (\pays -> (category . head $ pays, pays)) paysByCat
+
+totalPaysPerCategory :: [Payment] -> [(Category, Double)]
+totalPaysPerCategory payments = let groupedByCat = paymentsByCategory payments
+                                    totalPerCat  = map (\pays -> (category . head $ pays, sum $ map value pays)) groupedByCat
+                                in totalPerCat
+
+paymentsByCategory :: [Payment] -> [[Payment]]
+paymentsByCategory = groupBy (\p1 p2 -> (category p1) == (category p2)) . sortBy (comparing category)
 
 calcPercent :: Double -> Double -> Double
 calcPercent val total = let percent = floor $ val / total * 100
