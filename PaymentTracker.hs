@@ -23,7 +23,7 @@ chartPixel  = "#"
 emptyString = ""
 
 
--- Predefine categories and their threshold which can change
+-- Predefined categories and their threshold which can change
 food           = Cat "food" 200
 transportation = Cat "transportation" 200
 monthlyRoutine = Cat "monthly-routine" 2000
@@ -52,8 +52,8 @@ paymentsPerCategory payments = let paysByCat = paymentsByCategory payments
                                in map (\pays -> (category . head $ pays, pays)) paysByCat
 
 totalPaysPerCategory :: [Payment] -> [(Category, Double)]
-totalPaysPerCategory payments = let groupedByCat = paymentsByCategory payments
-                                    totalPerCat  = map (\pays -> (category . head $ pays, sum $ map value pays)) groupedByCat
+totalPaysPerCategory payments = let paysByCat = paymentsByCategory payments
+                                    totalPerCat  = map (\pays -> (category . head $ pays, sum $ map value pays)) paysByCat
                                 in totalPerCat
 
 paymentsByCategory :: [Payment] -> [[Payment]]
