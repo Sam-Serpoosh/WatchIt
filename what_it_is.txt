@@ -14,7 +14,7 @@ Basic & Initial functionality:
   - total payments so far -> DONE
   - chart up based on category -> DONE
   - list a particular category and break it down by description -> DONE
-  - generate warning based on categories and their thresholds
+  - generate warning based on categories and their thresholds -> DONE
 
 Core functionality input/output
 
@@ -22,3 +22,7 @@ Core functionality input/output
   - single payment come in <- in
   - Total payment info -> out
   - Chart up the category payments -> out
+  - Generate warnings if necessary
+
+TODO:
+  - Data Input & Output mechanism
