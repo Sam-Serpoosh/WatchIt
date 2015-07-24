@@ -1,15 +1,10 @@
 module PaymentTracker where
 
-import Data.List (sortBy, groupBy, intercalate)
+import Category
+import Data.List (sortBy, groupBy)
 import Data.Ord (comparing)
 
-type Threshold = Double
-
-data Category = Cat String Threshold
-  deriving (Eq, Ord)
-
-instance Show Category where
-  show (Cat name _) = name
+arrow      = " -> "
 
 data Payment = Payment { value       :: Double
                        , category    :: Category
@@ -17,51 +12,51 @@ data Payment = Payment { value       :: Double
                        } deriving (Eq)
 
 instance Show Payment where
-  show payment = description payment ++ " -> " ++ show (value payment) ++ " -> " ++ show (category payment)
+  show payment = description payment ++ arrow ++ show (value payment)
 
-chartPixel  = "#"
-emptyString = ""
+type Overpaid = Double
 
+data Warning = Warn Category Overpaid
+  deriving (Eq)
 
--- Predefined categories and their threshold which can change
-food           = Cat "food" 200
-transportation = Cat "transportation" 200
-monthlyRoutine = Cat "monthly-routine" 2000
-grocery        = Cat "grocery" 300
-clothes        = Cat "clothes" 300
-others         = Cat "others" 300
-
-categories :: [Category]
-categories = [food, transportation, monthlyRoutine, grocery, clothes, others]
+instance Show Warning where
+  show (Warn cat over) = show cat ++ arrow ++ show over
 
 -- Keep in mind the percents are approximate so
 -- if they won't add up to 100% it's OK!
 percentPerCategory :: [Payment] -> [(Category, Double)]
-percentPerCategory payments = let total = totalPayment payments
-                                  totalPerCat = totalPaysPerCategory payments
-                              in map (\(cat, val) -> (cat, calcPercent val total)) totalPerCat
-
-presentableChartForCats :: [(Category, Double)] -> [(Category, String)]
-presentableChartForCats = map (\(cat, percent) -> (cat, percentToHashTags percent))
-
-totalPayment :: [Payment] -> Double
-totalPayment payments = sum $ map (\p -> value p) payments
+percentPerCategory payments = let total       = totalPaid payments
+                                  totalPerCat = totalPaidPerCategory payments
+                              in map (\(cat, paid) -> (cat, calcPercent paid total)) totalPerCat
 
 paymentsPerCategory :: [Payment] -> [(Category, [Payment])]
 paymentsPerCategory payments = let paysByCat = paymentsByCategory payments
                                in map (\pays -> (category . head $ pays, pays)) paysByCat
 
-totalPaysPerCategory :: [Payment] -> [(Category, Double)]
-totalPaysPerCategory payments = let paysByCat = paymentsByCategory payments
-                                    totalPerCat  = map (\pays -> (category . head $ pays, sum $ map value pays)) paysByCat
-                                in totalPerCat
+totalPaid :: [Payment] -> Double
+totalPaid payments = sum $ map value payments
+
+warnings :: [Payment] -> Maybe [Warning]
+warnings payments = let paidPerCat = totalPaidPerCategory payments
+                        warnings   = generateWarnings paidPerCat
+                    in if (length warnings) == 0 then Nothing else Just (warnings)
+
+generateWarnings :: [(Category, Double)] -> [Warning]
+generateWarnings = map catPayToWarning . filter isOverpaid
+
+catPayToWarning :: (Category, Double) -> Warning
+catPayToWarning (cat@(Cat name threshold), paid) = Warn cat (paid - threshold)
+
+isOverpaid :: (Category, Double) -> Bool
+isOverpaid ((Cat name threshold), paid) =  paid > threshold
+
+totalPaidPerCategory :: [Payment] -> [(Category, Double)]
+totalPaidPerCategory payments = let paysByCat = paymentsByCategory payments
+                                in map (\pays -> (category . head $ pays, sum $ map value pays)) paysByCat
 
 paymentsByCategory :: [Payment] -> [[Payment]]
 paymentsByCategory = groupBy (\p1 p2 -> (category p1) == (category p2)) . sortBy (comparing category)
 
 calcPercent :: Double -> Double -> Double
-calcPercent val total = let percent = floor $ val / total * 100
+calcPercent val total = let percent = ceiling $ val / total * 100
                         in (fromIntegral percent :: Double)
-
-percentToHashTags :: Double -> String
-percentToHashTags val = intercalate emptyString $ take (floor $ val / 10) (repeat chartPixel)

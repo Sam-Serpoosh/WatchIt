@@ -1,44 +1,40 @@
 module PaymentTrackerTest where
 
 import Testing
+import TestData
+import Category
 import PaymentTracker
 
--- Sample data
-
-payments :: [Payment]
-payments = [
-            Payment { value = 10, category = food,           description = "chicken shawerma" },
-            Payment { value = 11, category = transportation, description = "uber to work"     },
-            Payment { value = 20, category = food,           description = "Noon o Kabab"     }
-           ]
-
--- Tests for totalPayment
+-- Tests for totalPaid
 
 calculatesTotalPayment :: [Payment] -> Double -> TestResult
-calculatesTotalPayment payments expectedTotal = assertEqual expectedTotal (totalPayment payments)
+calculatesTotalPayment payments expectedTotal = assertEqual expectedTotal (totalPaid payments)
 
 -- Tests for paymentsPerCategory testing the food payments for this test
 
 groupsPaymentsByCategory :: [Payment] -> (Category, [Payment]) -> TestResult
 groupsPaymentsByCategory payments expectedCatPays = assertEqual expectedCatPays ((paymentsPerCategory payments) !! 0)
 
--- Tests for totalPaysPerCategory
+-- Tests for totalPaidPerCategory
 
 calculatesTotalPerCategory :: [Payment] -> [(Category, Double)] -> TestResult
-calculatesTotalPerCategory payments expectedTotalPerCat = assertEqual expectedTotalPerCat (totalPaysPerCategory payments)
+calculatesTotalPerCategory payments expectedTotalPerCat = assertEqual expectedTotalPerCat (totalPaidPerCategory payments)
 
 -- Test for percentPerCategory
+
 calculatesPercentPerCategory :: [Payment] -> [(Category, Double)] -> TestResult
 calculatesPercentPerCategory payments expectedPercentPerCat = assertEqual expectedPercentPerCat (percentPerCategory payments)
 
--- Tests for presentableChartForCats
-shapesPresentableChartData :: [(Category, Double)] -> [(Category, String)] -> TestResult
-shapesPresentableChartData percentByCat expectedCatChart = assertEqual expectedCatChart (presentableChartForCats percentByCat)
+-- Tests for warnings
+
+givesWarnings :: [Payment] -> Maybe [Warning] -> TestResult
+givesWarnings payments expectedWarnings = assertEqual expectedWarnings (warnings payments)
 
 main :: IO ()
 main = do
   putStrLn $ show $ calculatesTotalPayment payments 41
   putStrLn $ show $ groupsPaymentsByCategory payments (food, [payments !! 0, payments !! 2])
   putStrLn $ show $ calculatesTotalPerCategory payments [(food, 30), (transportation, 11)]
-  putStrLn $ show $ calculatesPercentPerCategory payments [(food, 73), (transportation, 26)]
-  putStrLn $ show $ shapesPresentableChartData [(food, 47), (transportation, 52)] [(food, "####"), (transportation, "#####")]
+  putStrLn $ show $ calculatesPercentPerCategory payments [(food, 74), (transportation, 27)]
+  putStrLn $ show $ givesWarnings overPayments (Just [Warn clothes 100])
+  putStrLn $ show $ givesWarnings payments Nothing
