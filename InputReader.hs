@@ -1,9 +1,8 @@
 module InputReader where
 
-import System.Environment
 import Data.List.Split
-import PaymentTracker (Payment(..))
-import Category (Category, categories, others)
+import PaymentTracker (Payment(..), Money)
+import Category (Category(..), categories, others)
 
 comma = ","
 
