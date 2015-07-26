@@ -6,13 +6,15 @@ import Category
 import InputReader
 import Renderer
 
+total           = "total"
 percentChart    = "chart"
 categoryDetails = "cat-details"
 warns           = "warnings"
-knownActions    = "Actions: chart -- cat-details -- warnings"
+knownActions    = "Actions: total -- chart -- cat-details -- warnings"
 
 act :: String -> [String] -> [Payment] -> String
 act action args payments
+  | action == total           = show $ totalSpent payments
   | action == percentChart    = drawChart payments
   | action == categoryDetails = detailsOfCat payments (findCategory $ args !! 2) -- Desired Category
   | action == warns           = showWarnings payments

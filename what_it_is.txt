@@ -19,10 +19,9 @@ Basic & Initial functionality:
 Core functionality input/output
 
   - List of payments come in <- in
-  - single payment come in <- in
   - Total payment info -> out
   - Chart up the category payments -> out
-  - Generate warnings if necessary
+  - Generate warnings if necessary -> out
 
 TODO:
   - Data Input & Output mechanism
