@@ -4,8 +4,6 @@ import Category
 import PaymentTracker
 import Data.List (intercalate)
 
-type Percent = Double
-
 chartPixel  = "#"
 colon       = ": "
 emptyString = ""
@@ -19,7 +17,7 @@ renderPaymentsOfCategory :: [(Category, [Payment])] -> Category -> String
 renderPaymentsOfCategory paysPerCat cat = let paysOfCat = extractPaymentsOfCat paysPerCat cat
                                           in case paysOfCat of
                                             Nothing     -> emptyString
-                                            (Just pays) -> unlines $ [show cat] ++ map show pays
+                                            (Just pays) -> unlines $ [(show cat) ++ colon] ++ map show pays
 
 renderWarnings :: Maybe [Warning] -> String
 renderWarnings Nothing      = emptyString
@@ -30,10 +28,10 @@ extractPaymentsOfCat paysPerCat cat = let paysForCat = filter (\(c, pays) -> c =
                                       in if (length paysForCat) == 0 then Nothing else Just (snd . head $ paysForCat)
 
 presentableChartForCats :: [(Category, Percent)] -> [(Category, String)]
-presentableChartForCats = map (\(cat, percent) -> (cat, percentToHashTags percent))
+presentableChartForCats = map (\(cat, percent) -> (cat, percentToChartPixels percent))
 
 joinCategoryAndTags :: (Category, String) -> String
 joinCategoryAndTags (cat, tags) = show cat ++ colon ++ tags
 
-percentToHashTags :: Percent -> String
-percentToHashTags val = intercalate emptyString $ take (ceiling $ val / 10) (repeat chartPixel)
+percentToChartPixels :: Percent -> String
+percentToChartPixels val = intercalate emptyString $ take (ceiling $ val / 10) (repeat chartPixel)

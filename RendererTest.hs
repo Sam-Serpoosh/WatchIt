@@ -23,7 +23,7 @@ rendersWarningsIfExist warns expectedWarnsRendering = assertEqual expectedWarnsR
 
 -- Expected Values 
 
-expectedRenderingOfFoodPayments = "food\nchicken shawerma -> 10.0\nNoon o Kabab -> 20.0\n" 
+expectedRenderingOfFoodPayments = "food: \nchicken shawerma -> 10.0\nNoon o Kabab -> 20.0\n" 
 expectedRenderingOfWarnings     = "food -> 100.0\nclothes -> 200.0\n"
 
 main :: IO ()
