@@ -1,12 +1,9 @@
 module Renderer where
 
+import StringUtils
 import Category
 import PaymentTracker
 import Data.List (intercalate)
-
-chartPixel  = "#"
-colon       = ": "
-emptyString = ""
 
 chartPaymentsByCat :: [Payment] -> String
 chartPaymentsByCat payments = let presentable = presentableChartForCats . percentPerCategory $ payments
@@ -28,7 +25,16 @@ extractPaymentsOfCat paysPerCat cat = let paysForCat = filter (\(c, pays) -> c =
                                       in if (length paysForCat) == 0 then Nothing else Just (snd . head $ paysForCat)
 
 presentableChartForCats :: [(Category, Percent)] -> [(Category, String)]
-presentableChartForCats = map (\(cat, percent) -> (cat, percentToChartPixels percent))
+presentableChartForCats catPercents = let formattedCats = formatCategories $ map fst catPercents
+                                          pixels        = map percentToChartPixels $ map snd catPercents
+                                      in zip formattedCats pixels
+
+formatCategories :: [Category] -> [Category]
+formatCategories cats = let enlargeFactor = maximum $ map length $ map name cats
+                        in map (formatCategory enlargeFactor) cats
+
+formatCategory :: Int -> Category -> Category
+formatCategory enlargeFactor cat@(Cat { name = oldname }) = cat { name = enlarge enlargeFactor oldname }
 
 joinCategoryAndTags :: (Category, String) -> String
 joinCategoryAndTags (cat, tags) = show cat ++ colon ++ tags

@@ -1,21 +1,23 @@
 module Category where
 
 type Threshold = Double
+type Money     = Double
 
-data Category = Cat String Threshold
-  deriving (Eq, Ord)
+data Category = Cat { name :: String
+                    , threshold :: Money
+                    } deriving (Eq, Ord)
 
 instance Show Category where
-  show (Cat name _) = name
+  show Cat { name = catName } = catName
 
 -- Predefined categories and their threshold which can change
 
-food           = Cat "food" 200
-transportation = Cat "transportation" 200
-monthlyRoutine = Cat "monthly-routine" 2000
-grocery        = Cat "grocery" 300
-clothes        = Cat "clothes" 300
-others         = Cat "others" 300
+food           = Cat { name = "food",            threshold = 200  }
+transportation = Cat { name = "transportation",  threshold = 200  }
+monthlyRoutine = Cat { name = "monthly-routine", threshold = 2000 }
+grocery        = Cat { name = "grocery",         threshold = 300  }
+clothes        = Cat { name = "clothes",         threshold = 300  }
+others         = Cat { name = "others",          threshold = 300  }
 
 categories :: [Category]
 categories = [food, transportation, monthlyRoutine, grocery, clothes, others]

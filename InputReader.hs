@@ -1,10 +1,9 @@
 module InputReader where
 
+import StringUtils
 import Data.List.Split
-import PaymentTracker (Payment(..), Money)
-import Category (Category(..), categories, others)
-
-comma = ","
+import PaymentTracker (Payment(..))
+import Category (Category(..), Money, categories, others)
 
 contentToPayments :: String -> [Payment]
 contentToPayments content = map lineToPayment (lines content)
@@ -16,5 +15,5 @@ lineToPayment line = let (val:cat:desc:rest) = splitOn comma line
                      in Payment { value = paidValue, category = categ, description = desc }
 
 findCategory :: String -> Category
-findCategory cat = let definedCat = filter (\(Cat name _) -> name == cat) categories
+findCategory cat = let definedCat = filter (\c -> name c == cat) categories
                    in if (length definedCat == 0) then others else head definedCat

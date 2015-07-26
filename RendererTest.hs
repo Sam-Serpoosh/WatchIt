@@ -1,5 +1,6 @@
 module RendererTest where
 
+import StringUtils
 import Testing
 import TestData
 import Category
@@ -8,8 +9,8 @@ import PaymentTracker (Payment, Warning(..))
 
 -- Tests for presentableChartForCats
 
-shapesPresentableChartData :: [(Category, Double)] -> [(Category, String)] -> TestResult
-shapesPresentableChartData percentByCat expectedCatChart = assertEqual expectedCatChart (presentableChartForCats percentByCat)
+shapesPresentableChartData :: [(Category, Double)] -> [String] -> TestResult
+shapesPresentableChartData percentByCat expectedChartPixels = assertEqual expectedChartPixels (map snd $ presentableChartForCats percentByCat)
 
 -- Tests for renderPaymentsOfCategory
 
@@ -28,7 +29,7 @@ expectedRenderingOfWarnings     = "food -> 100.0\nclothes -> 200.0\n"
 
 main :: IO ()
 main = do
-  putStrLn $ show $ shapesPresentableChartData [(food, 47), (transportation, 52)] [(food, "#####"), (transportation, "######")]
+  putStrLn $ show $ shapesPresentableChartData [(food, 47), (transportation, 52)] ["#####", "######"]
   putStrLn $ show $ rendersPaymentsOfCategory [(food, [chicken, kebob]), (transportation, [uberToWork, uberToAirport])] expectedRenderingOfFoodPayments
   putStrLn $ show $ rendersWarningsIfExist (Just [Warn food 100, Warn clothes 200]) expectedRenderingOfWarnings
   putStrLn $ show $ rendersWarningsIfExist Nothing emptyString

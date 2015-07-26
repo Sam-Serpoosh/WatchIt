@@ -2,7 +2,12 @@
 
 run_all_tests() {
   clear
-  ls | grep Test.hs | while read file; do runhaskell $file && echo "=================="; done
+  ls             |
+    grep Test.hs |
+    while read file; do
+      echo $file && echo &&
+      runhaskell $file && echo "==================";
+    done
 }
 
 run_all_tests

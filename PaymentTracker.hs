@@ -1,10 +1,10 @@
 module PaymentTracker where
 
+import StringUtils
 import Category
 import Data.List (sortBy, groupBy)
 import Data.Ord (comparing)
 
-arrow = " -> "
 
 data Payment = Payment { value       :: Double
                        , category    :: Category
@@ -23,7 +23,6 @@ instance Show Warning where
   show (Warn cat over) = show cat ++ arrow ++ show over
 
 type Percent = Double
-type Money   = Double
 
 -- Keep in mind the percents are approximate so
 -- if they won't add up to 100% it's OK!
@@ -48,10 +47,10 @@ generateWarnings :: [(Category, Money)] -> [Warning]
 generateWarnings = map catPayToWarning . filter isOverpaid
 
 catPayToWarning :: (Category, Money) -> Warning
-catPayToWarning (cat@(Cat name threshold), paid) = Warn cat (paid - threshold)
+catPayToWarning (cat, paid) = Warn cat (paid - (threshold cat))
 
 isOverpaid :: (Category, Money) -> Bool
-isOverpaid ((Cat _ threshold), paid) = paid > threshold
+isOverpaid (cat, paid) = paid > (threshold cat)
 
 totalPaidPerCategory :: [Payment] -> [(Category, Money)]
 totalPaidPerCategory payments = let paysByCat = paymentsByCategory payments
