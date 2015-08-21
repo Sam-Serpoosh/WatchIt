@@ -32,6 +32,10 @@ detailsOfCat payments cat = renderPaymentsOfCategory (paymentsPerCategory paymen
 showWarnings :: [Payment] -> String
 showWarnings = renderWarnings . warnings
 
+-- Sample Usage Synopsis:
+--
+-- runhaskell Main.hs ./sample_payments total
+-- runhaskell Main.hs ./sample_payments cat-details food
 main :: IO ()
 main = do
   args    <- getArgs

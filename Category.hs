@@ -19,5 +19,5 @@ grocery        = Cat { name = "grocery",         threshold = 300  }
 clothes        = Cat { name = "clothes",         threshold = 300  }
 others         = Cat { name = "others",          threshold = 300  }
 
-categories :: [Category]
-categories = [food, transportation, monthly, grocery, clothes, others]
+validCategories :: [Category]
+validCategories = [food, transportation, monthly, grocery, clothes, others]
