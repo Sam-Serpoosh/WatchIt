@@ -2,6 +2,7 @@ module PaymentTracker where
 
 import StringUtils
 import Category
+import Data.Monoid
 import Data.List (sortBy, groupBy)
 import Data.Ord (comparing)
 
@@ -14,6 +15,11 @@ data Payment = Payment { value       :: Double
 instance Show Payment where
   show payment = description payment ++ arrow ++ show (value payment)
 
+-- For the ability of adding TWO payments together agnostic of category!
+instance Monoid Payment where
+  mempty = Payment { value = 0.0, category = others, description = emptyString }
+  Payment { value = v1 } `mappend` Payment { value = v2 } = Payment { value = v1 + v2, category = others, description = emptyString }
+
 type Overpaid = Double
 
 data Warning = Warn Category Overpaid
@@ -24,8 +30,7 @@ instance Show Warning where
 
 type Percent = Double
 
--- Keep in mind the percents are approximate so
--- if they won't add up to 100% it's OK!
+-- Keep in mind the percents are approximate so they might not add up to 100
 percentPerCategory :: [Payment] -> [(Category, Percent)]
 percentPerCategory payments = let total       = totalPaid payments
                                   totalPerCat = totalPaidPerCategory payments
@@ -36,7 +41,7 @@ paymentsPerCategory payments = let paysByCat = paymentsByCategory payments
                                in map (\pays -> (category . head $ pays, pays)) paysByCat
 
 totalPaid :: [Payment] -> Money
-totalPaid payments = sum $ map value payments
+totalPaid = value . mconcat
 
 warnings :: [Payment] -> Maybe [Warning]
 warnings payments = let paidPerCat = totalPaidPerCategory payments
@@ -54,10 +59,13 @@ isOverpaid (cat, paid) = paid > (threshold cat)
 
 totalPaidPerCategory :: [Payment] -> [(Category, Money)]
 totalPaidPerCategory payments = let paysByCat = paymentsByCategory payments
-                                in map (\pays -> (category . head $ pays, sum $ map value pays)) paysByCat
+                                in map totalPaidInSameCategory paysByCat
 
 paymentsByCategory :: [Payment] -> [[Payment]]
 paymentsByCategory = groupBy (\p1 p2 -> (category p1) == (category p2)) . sortBy (comparing category)
+
+totalPaidInSameCategory :: [Payment] -> (Category, Money)
+totalPaidInSameCategory payments = (category . head $ payments, totalPaid payments)
 
 calcPercent :: Money -> Money -> Percent
 calcPercent val total = let percent = ceiling $ val / total * 100

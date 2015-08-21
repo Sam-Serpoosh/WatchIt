@@ -14,10 +14,10 @@ instance Show Category where
 
 food           = Cat { name = "food",            threshold = 200  }
 transportation = Cat { name = "transportation",  threshold = 200  }
-monthlyRoutine = Cat { name = "monthly-routine", threshold = 2000 }
+monthly        = Cat { name = "monthly",         threshold = 2000 }
 grocery        = Cat { name = "grocery",         threshold = 300  }
 clothes        = Cat { name = "clothes",         threshold = 300  }
 others         = Cat { name = "others",          threshold = 300  }
 
 categories :: [Category]
-categories = [food, transportation, monthlyRoutine, grocery, clothes, others]
+categories = [food, transportation, monthly, grocery, clothes, others]

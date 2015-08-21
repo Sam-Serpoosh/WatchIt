@@ -1,12 +1,11 @@
 module StringUtils where
 
-comma = ","
-arrow = " -> "
+comma       = ","
+arrow       = " -> "
 chartPixel  = "#"
 colon       = ": "
 emptyString = ""
-
-space = ' '
+space       = ' '
 
 -- Add trailing space to a string so it'll have desired length
 enlarge :: Int -> String -> String
