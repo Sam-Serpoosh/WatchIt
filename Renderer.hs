@@ -14,7 +14,10 @@ renderPaymentsOfCategory :: [(Category, [Payment])] -> Category -> String
 renderPaymentsOfCategory paysPerCat cat = let paysOfCat = extractPaymentsOfCat paysPerCat cat
                                           in case paysOfCat of
                                             Nothing     -> emptyString
-                                            (Just pays) -> unlines $ [(show cat) ++ colon] ++ map show pays
+                                            (Just pays) -> unlines $ [formatCatAndItsTotalPaid cat pays] ++ map show pays
+
+formatCatAndItsTotalPaid :: Category -> [Payment] -> String
+formatCatAndItsTotalPaid cat payments = (show cat) ++ colon ++ spaceStr ++ (show $ totalPaid payments)
 
 renderWarnings :: Maybe [Warning] -> String
 renderWarnings Nothing      = emptyString

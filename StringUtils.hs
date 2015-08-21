@@ -5,6 +5,7 @@ arrow       = " -> "
 chartPixel  = "#"
 colon       = ": "
 emptyString = ""
+spaceStr    = " "
 space       = ' '
 
 -- Add trailing space to a string so it'll have desired length

@@ -22,4 +22,4 @@ fun            = Cat { name = "fun",             threshold = 100  }
 others         = Cat { name = "others",          threshold = 300  }
 
 validCategories :: [Category]
-validCategories = [food, transportation, monthly, grocery, clothes, others]
+validCategories = [food, transportation, monthly, grocery, clothes, books, fun, others]
