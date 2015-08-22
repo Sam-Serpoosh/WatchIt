@@ -3,6 +3,7 @@ module Main where
 import System.Environment
 import PaymentTracker
 import Category
+import CategoryConfig
 import InputReader
 import Renderer
 import Data.List (intercalate)
@@ -39,12 +40,7 @@ generateReport payments = do
   let catDetails = map (detailsOfCat payments) validCategories
   putStrLn catDetailsTitle
   putStrLn $ intercalate delimiter catDetails
-  putStrLn separator
 
--- Sample Usage / Synopsis:
---
--- runhaskell src/Main.hs payments/payment_file
--- runhaskell dist/build/WatchIt/WatchIt payments/payment_file
 main :: IO ()
 main = do
   args    <- getArgs

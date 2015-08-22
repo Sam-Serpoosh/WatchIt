@@ -3,7 +3,8 @@ module InputReader where
 import StringUtils
 import Data.List.Split
 import PaymentTracker (Payment(..))
-import Category (Category(..), Money, validCategories, others)
+import Category (Category(..), Money)
+import CategoryConfig
 
 contentToPayments :: String -> [Payment]
 contentToPayments content = map lineToPayment (lines content)

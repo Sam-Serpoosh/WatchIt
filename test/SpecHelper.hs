@@ -3,6 +3,7 @@ module SpecHelper
   , module StringUtils
   , module Renderer
   , module Category
+  , module CategoryConfig
   , module PaymentTracker
   , chicken
   , kebob
@@ -17,6 +18,7 @@ import Test.Hspec
 import StringUtils
 import Renderer
 import Category
+import CategoryConfig
 import PaymentTracker
 
 chicken, kebob, uberToWork, uberToAirport, priceyClothes :: Payment
