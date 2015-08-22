@@ -18,7 +18,7 @@ renderPaymentsOfCategory paysPerCat cat = let paysOfCat = extractPaymentsOfCat p
 
 renderWarnings :: Maybe [Warning] -> String
 renderWarnings Nothing      = emptyString
-renderWarnings (Just warns) = unlines $ map show warns
+renderWarnings (Just warns) = unlines $ map show (alignWarnings warns)
 
 presentableChartForCats :: [(Category, Percent)] -> [(Category, String)]
 presentableChartForCats catPercents = let formattedCats = alignCategories $ map fst catPercents
@@ -51,3 +51,8 @@ alignPayment enlargeFactor payment@(Payment { description = oldDesc }) = payment
 
 alignCategory :: Int -> Category -> Category
 alignCategory enlargeFactor cat@(Cat { name = oldName }) = cat { name = enlarge enlargeFactor oldName }
+
+alignWarnings :: [Warning] -> [Warning]
+alignWarnings warns = let alignedCats  = alignCategories $ map categ warns
+                          zipped       = zip warns alignedCats
+                      in map (\(warn, alignedCat) -> warn { categ = alignedCat }) zipped

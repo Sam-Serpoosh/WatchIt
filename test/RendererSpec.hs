@@ -5,7 +5,7 @@ import SpecHelper
 -- Expected Values for some Specs
 
 expectedRenderingOfFoodPayments = "food:  30.0\nchicken shawerma -> 10.0\nNoon o Kabab     -> 20.0\n" 
-expectedRenderingOfWarnings     = "food -> 100.0\nclothes -> 200.0\n"
+expectedRenderingOfWarnings     = "food    -> 100.0\nclothes -> 200.0\n"
 sampleCategoryPayments          = [(food, [chicken, kebob]), (transportation, [uberToWork, uberToAirport])]
 
 main :: IO ()

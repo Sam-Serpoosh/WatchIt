@@ -23,11 +23,12 @@ instance Monoid Payment where
 
 type Overpaid = Double
 
-data Warning = Warn Category Overpaid
-  deriving (Eq)
+data Warning = Warn { categ    :: Category
+                    , overPaid :: Overpaid
+                    } deriving (Eq)
 
 instance Show Warning where
-  show (Warn cat over) = show cat ++ arrow ++ show over
+  show Warn { categ = cat,  overPaid = over } = show cat ++ arrow ++ show over
 
 type Percent = Double
 
@@ -53,7 +54,7 @@ generateWarnings :: [(Category, Money)] -> [Warning]
 generateWarnings = map catPayToWarning . filter isOverpaid
 
 catPayToWarning :: (Category, Money) -> Warning
-catPayToWarning (cat, paid) = Warn cat (paid - (threshold cat))
+catPayToWarning (cat, paid) = Warn { categ = cat, overPaid = (paid - (threshold cat)) }
 
 isOverpaid :: (Category, Money) -> Bool
 isOverpaid (cat, paid) = paid > (threshold cat)
