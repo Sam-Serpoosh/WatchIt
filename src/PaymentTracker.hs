@@ -45,8 +45,8 @@ totalPaid = value . mconcat
 
 warnings :: [Payment] -> Maybe [Warning]
 warnings payments = let paidPerCat = totalPaidPerCategory payments
-                        warnings   = generateWarnings paidPerCat
-                    in if (length warnings) == 0 then Nothing else Just warnings
+                        warns      = generateWarnings paidPerCat
+                    in if (length warns) == 0 then Nothing else Just warns
 
 generateWarnings :: [(Category, Money)] -> [Warning]
 generateWarnings = map catPayToWarning . filter isOverpaid
@@ -68,5 +68,5 @@ totalPaidInSameCategory :: [Payment] -> (Category, Money)
 totalPaidInSameCategory payments = (category . head $ payments, totalPaid payments)
 
 calcPercent :: Money -> Money -> Percent
-calcPercent val total = let percent = ceiling $ val / total * 100
+calcPercent val total = let percent = (ceiling $ val / total * 100) :: Int
                         in (fromIntegral percent :: Percent)

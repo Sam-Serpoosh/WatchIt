@@ -24,7 +24,7 @@ renderWarnings Nothing      = emptyString
 renderWarnings (Just warns) = unlines $ map show warns
 
 extractPaymentsOfCat :: [(Category, [Payment])] -> Category -> Maybe [Payment]
-extractPaymentsOfCat paysPerCat cat = let paysForCat = filter (\(c, pays) -> c == cat) paysPerCat
+extractPaymentsOfCat paysPerCat cat = let paysForCat = filter (\(c, _) -> c == cat) paysPerCat
                                       in if (length paysForCat) == 0 then Nothing else Just (snd . head $ paysForCat)
 
 presentableChartForCats :: [(Category, Percent)] -> [(Category, String)]

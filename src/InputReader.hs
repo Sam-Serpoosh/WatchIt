@@ -9,7 +9,7 @@ contentToPayments :: String -> [Payment]
 contentToPayments content = map lineToPayment (lines content)
 
 lineToPayment :: String -> Payment
-lineToPayment line = let (val:cat:desc:rest) = splitOn comma line
+lineToPayment line = let (val:cat:desc:_) = splitOn comma line
                          paidValue           = read val :: Money
                          categ               = findCategory cat
                      in Payment { value = paidValue, category = categ, description = desc }

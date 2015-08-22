@@ -11,6 +11,7 @@ instance Show Category where
   show Cat { name = catName } = catName
 
 -- Predefined categories and their threshold which can change
+food, transportation, monthly, grocery, clothes, books, fun, others :: Category
 
 food           = Cat { name = "food",            threshold = 200  }
 transportation = Cat { name = "transportation",  threshold = 200  }
