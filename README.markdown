@@ -12,7 +12,7 @@ It provides the following information based on given payment data:
 
 - **Total** money paid.
 - **Charts** what fraction of payments belong to each `Category`.
-- **Warns** if more money was paid for a category regarding its defined *threshold* and shows hoe much over threshold it was paid.
+- **Warns** if more money was paid for a category regarding its defined *threshold* and shows how much over threshold it was paid.
 - **Details** of each category is also rendered (e.g different payemnts in each category)
 
 ## SYNOPSIS
@@ -130,7 +130,7 @@ In this case payments of **NO** category was passed its respected threshold, hen
 
 ### RUNNING TESTS
 
-If you wanna run the tests/specs which are written using `HSpec` for this application, you can simply run the following from the root directory of the repository:
+If you wanna run the tests/specs which are written using [**HSpec**](https://hackage.haskell.org/package/hspec) for this application, you can simply run the following from the root directory of the repository:
 
 ```shell
 cabal test
@@ -138,4 +138,4 @@ cabal test
 
 #### KEEP IN MIND
 
-That there are couple of tests related to `warnings` function in `src/PaymentTrackerSpec.hs` file and those depend on the thresholds determined in `src/CategoryConfig.hs`. They are passing for me cause I wrote those tests regarding my thresholds and categories but if you configure your own categories and their thresholds, they might fail and you need to update those tests based on your own categories and thresholds. [of course there is an easy way to make that test independent of the config file but I'm too lazy at the time to do that!]
+That there are couple of tests related to `warnings` function in `src/PaymentTrackerSpec.hs` file and those depend on the thresholds determined in `src/CategoryConfig.hs`. They are passing for me cause I wrote those tests regarding *my own* thresholds and categories but if you configure your own categories and their thresholds, they might fail and you need to update those tests based on your own configuration. Of course there is an easy way to make that test independent of the config file but I'm too lazy at the time to do that :) [it's 3:00 AM]
