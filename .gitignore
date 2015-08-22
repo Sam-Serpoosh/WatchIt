@@ -1,4 +1,5 @@
 payments
+what_it_is.txt
 dist
 cabal-dev
 *.o
