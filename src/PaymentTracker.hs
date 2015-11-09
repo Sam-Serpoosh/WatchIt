@@ -3,7 +3,6 @@ module PaymentTracker where
 import StringUtils
 import Category
 import CategoryConfig
-import Data.Monoid
 import Data.List (sortBy, groupBy)
 import Data.Ord (comparing)
 
