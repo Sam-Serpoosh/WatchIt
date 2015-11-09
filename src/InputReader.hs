@@ -11,8 +11,8 @@ contentToPayments content = map lineToPayment (lines content)
 
 lineToPayment :: String -> Payment
 lineToPayment line = let (val:cat:desc:_) = splitOn comma line
-                         paidValue           = read val :: Money
-                         categ               = findCategory cat
+                         paidValue        = read val :: Money
+                         categ            = findCategory cat
                      in Payment { value = paidValue, category = categ, description = desc }
 
 findCategory :: String -> Category
