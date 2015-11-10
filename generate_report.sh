@@ -19,7 +19,7 @@ arg_check() {
 }
 
 build() {
-  /Users/saserpoosh/.cabal/bin/cabal build
+  /usr/bin/cabal build
 }
 
 generate_report() {
