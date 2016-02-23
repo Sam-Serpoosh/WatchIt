@@ -36,11 +36,11 @@ formatCatAndItsTotalPaid :: Category -> [Payment] -> String
 formatCatAndItsTotalPaid cat payments = (show cat) ++ colon ++ spaceStr ++ (show $ totalPaid payments)
 
 alignPayments :: [Payment] -> [Payment]
-alignPayments payments = let enlargeFactor = maximum $ map length $ map description payments
+alignPayments payments = let enlargeFactor = maximum $ map (length . description) payments
                          in map (alignPayment enlargeFactor) payments
 
 alignCategories :: [Category] -> [Category]
-alignCategories cats = let enlargeFactor = maximum $ map length $ map name cats
+alignCategories cats = let enlargeFactor = maximum $ map (length . name) cats
                        in map (alignCategory enlargeFactor) cats
 
 percentToChartPixels :: Percent -> String

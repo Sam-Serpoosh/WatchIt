@@ -19,7 +19,6 @@ chartTitle      = "* PAYMENTS CHART *"
 warningsTitle   = "!!! WARNINGS !!!"
 catDetailsTitle = "* CATEGORY DETAILS *"
 
-
 detailsOfCat :: [Payment] -> Category -> String
 detailsOfCat payments cat = renderPaymentsOfCategory (paymentsPerCategory payments) cat
 
@@ -35,7 +34,7 @@ generateReport payments = do
   putStrLn $ chartPaymentsByCat payments
   putStrLn separator
   putStrLn warningsTitle
-  putStrLn $ renderWarnings . warnings $ payments
+  putStrLn $ showWarnings  payments
   putStrLn separator
   let catDetails = map (detailsOfCat payments) validCategories
   putStrLn catDetailsTitle

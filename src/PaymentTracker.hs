@@ -6,7 +6,6 @@ import CategoryConfig
 import Data.List (sortBy, groupBy)
 import Data.Ord (comparing)
 
-
 data Payment = Payment { value       :: Double
                        , category    :: Category
                        , description :: String
