@@ -29,8 +29,32 @@ instance Show Warning where
   show Warn { categ = cat,  overPaid = over } = show cat ++ arrow ++ show over
 
 type Percent = Double
+type Month   = String
 
--- Keep in mind the percents are approximate so they might not add up to 100
+-- INPUT : All payments of each month
+-- OUTPUT: For each Category the total paid value per Month
+-- e.g [(food, [(jan_2016, 100), (feb_2016, 150)]), (clothes, [(jan_2016, 150), (feb_2016, 200)])]
+categoryPaidOverMonths :: [(Month, [Payment])] -> [(Category, [(Month, Money)])]
+categoryPaidOverMonths monthsPayments =
+  let categoriesMonthPaid = map totalPaidInMonthCategories monthsPayments
+      allMonthsPaidCats   = foldl (++) [] categoriesMonthPaid
+      monthsPaymentsByCat = groupMonthsPaymentsByCat allMonthsPaidCats
+  in map factorOutCatMonthsPayments monthsPaymentsByCat
+
+totalPaidInMonthCategories :: (Month, [Payment]) -> [(Category, Month, Money)]
+totalPaidInMonthCategories (m, ps) = map (\(cat, paid) -> (cat, m, paid)) $ totalPaidPerCategory ps
+
+groupMonthsPaymentsByCat :: [(Category, Month, Money)] -> [[(Category, Month, Money)]]
+groupMonthsPaymentsByCat = groupBy (\(c1, _, _) (c2, _, _) -> c1 == c2) . sortBy (comparing (\(c, _, _) -> c))
+
+factorOutCatMonthsPayments :: [(Category, Month, Money)] -> (Category, [(Month, Money)])
+factorOutCatMonthsPayments catMonthsPays = let (c, _, _)  = head catMonthsPays
+                                               monthsPays = map (\(_, month, paid) -> (month, paid)) catMonthsPays
+                                           in (c, monthsPays)
+
+-- Percents are approximate so they might NOT add up to 100
+-- OUTPUT: What percent of the total money was spent on each Category
+-- e.g [(food, 25%), (clothes, 34%)]
 percentPerCategory :: [Payment] -> [(Category, Percent)]
 percentPerCategory payments = let total       = totalPaid payments
                                   totalPerCat = totalPaidPerCategory payments
