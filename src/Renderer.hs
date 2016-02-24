@@ -3,6 +3,7 @@ module Renderer where
 import StringUtils
 import Category
 import PaymentTracker
+import Data.Char
 import Data.List (intercalate)
 
 chartPaymentsByCat :: [Payment] -> String
@@ -19,6 +20,18 @@ renderPaymentsOfCategory paysPerCat cat = let paysOfCat = extractPaymentsOfCat p
 renderWarnings :: Maybe [Warning] -> String
 renderWarnings Nothing      = emptyString
 renderWarnings (Just warns) = unlines $ map show (alignWarnings warns)
+
+-- Bar Chart for money spent on a category in different months
+barChartCatSpentMonths :: (Category, [(Month, Money)]) -> String
+barChartCatSpentMonths (cat, monthsSpent) =
+  let alignedMonths = alignStrings $ map fst monthsSpent
+      barPixels     = map valueToPixel $ map snd monthsSpent
+      zipped        = zip alignedMonths barPixels
+      graphBars     = map (\(month, pix) -> month ++ colon ++ pix) zipped
+  in unlines $ [map toUpper (name cat)] ++ graphBars
+
+valueToPixel :: Money -> String
+valueToPixel money = intercalate emptyString $ take (ceiling $ money / 50) (repeat chartPixel)
 
 presentableChartForCats :: [(Category, Percent)] -> [(Category, String)]
 presentableChartForCats catPercents = let formattedCats = alignCategories $ map fst catPercents

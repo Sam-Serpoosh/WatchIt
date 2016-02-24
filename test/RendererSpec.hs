@@ -38,3 +38,15 @@ spec = do
       it "aligns category name based on given enlarging factory" $ do
         let cat = Cat { name = "fun", threshold = 100.0 }
         alignCategory 5 cat `shouldBe` Cat { name = "fun  ", threshold = 100.0 }
+
+    context "Bar Chart for money spent on a category in different months" $ do
+      context "valueToPixel" $ do
+        it "converts values to pixels for bar chart" $ do
+          valueToPixel 188 `shouldBe` "####"
+
+      context "barChartCatSpentMonths" $ do
+        it "draws a bar chart for category payments in months" $ do
+          let jan = "jan_2016"
+          let aug = "august_2015"
+          let catMonthsPays = (food, [(aug, 60), (jan, 120)])
+          barChartCatSpentMonths catMonthsPays `shouldBe` "FOOD\naugust_2015: ##\njan_2016   : ###\n"
