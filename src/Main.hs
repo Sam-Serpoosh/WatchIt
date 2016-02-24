@@ -6,11 +6,14 @@ import Category
 import CategoryConfig
 import InputReader
 import Renderer
+import Data.List.Split
 import Data.List (intercalate)
 
-delimiter, separator:: String
-delimiter = "-------------------------------------------\n"
-separator = delimiter ++ delimiter ++ delimiter
+delimiter, separator, detailReport, catOverMonth :: String
+delimiter    = "-------------------------------------------\n"
+separator    = delimiter ++ delimiter ++ delimiter
+detailReport = "detail"
+catOverMonth = "cat-chart"
 
 -- Title of Different Sections in the Output
 totalPaidTitle, chartTitle, warningsTitle, catDetailsTitle :: String
@@ -22,9 +25,6 @@ catDetailsTitle = "* CATEGORY DETAILS *"
 detailsOfCat :: [Payment] -> Category -> String
 detailsOfCat payments cat = renderPaymentsOfCategory (paymentsPerCategory payments) cat
 
-showWarnings :: [Payment] -> String
-showWarnings = renderWarnings . warnings
-
 generateReport :: [Payment] -> IO ()
 generateReport payments = do
   putStrLn totalPaidTitle
@@ -34,15 +34,26 @@ generateReport payments = do
   putStrLn $ chartPaymentsByCat payments
   putStrLn separator
   putStrLn warningsTitle
-  putStrLn $ showWarnings  payments
+  putStrLn $ renderWarnings . warnings $ payments
   putStrLn separator
-  let catDetails = map (detailsOfCat payments) validCategories
   putStrLn catDetailsTitle
-  putStrLn $ intercalate delimiter catDetails
+  putStrLn $ intercalate delimiter $ map (detailsOfCat payments) validCategories
+
+paymentsOutOfFile :: FilePath -> IO [Payment]
+paymentsOutOfFile path = do
+  content <- readFile path
+  return $ contentToPayments content
 
 main :: IO ()
 main = do
-  args    <- getArgs
-  content <- readFile (args !! 0) -- First arg is file-name
-  let payments = contentToPayments content
-  generateReport payments
+  args <- getArgs
+  let action = args !! 0
+  let path   = args !! 1
+  if action == detailReport then do
+    payments <- paymentsOutOfFile path
+    generateReport payments
+  else do
+    let paths  = tail args
+    let months = map (last . splitOn "/") paths
+    monthsPayments <- sequence $ map paymentsOutOfFile paths
+    putStrLn $ intercalate delimiter $ barChartCategories $ zip months monthsPayments

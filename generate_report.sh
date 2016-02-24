@@ -6,14 +6,17 @@ main() {
   arg_check $@
   build
   separate
-  generate_report $1
+  generate_report $@
 }
 
 arg_check() {
-  if [ $# -eq 0 ]
+  if [ $# -lt 2 ]
   then
     echo "NO Arguments Provided!"
-    echo "Usage: ./generate_report.sh payments/payment-file"
+    echo "Usage: ./generate_report.sh <action> <payment-file[s]>"
+    echo "<action>: detail | cat-chart"
+    echo "detail    -> ONE payment file"
+    echo "cat-chart -> MULTIPLE payment files"
     exit 1
   fi
 }
@@ -23,7 +26,7 @@ build() {
 }
 
 generate_report() {
-  ./dist/build/WatchIt/WatchIt $1
+  ./dist/build/WatchIt/WatchIt $@
 }
 
 separate() {

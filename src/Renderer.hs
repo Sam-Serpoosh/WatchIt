@@ -69,8 +69,10 @@ alignWarnings warns = let alignedCats  = alignCategories $ map categ warns
 
 -- Bar Charts for money spent on each category in different months
 -- Bar Chart for FOOD, for CLOTHES, etc.
-barChartCategories :: [(Category, [(Month, Money)])] -> [String]
-barChartCategories = map barChartCatSpentMonths
+barChartCategories :: [(Month, [Payment])] -> [String]
+barChartCategories monthsPayments =
+  let monthsSpentOnCat = categoryPaidOverMonths monthsPayments
+  in map barChartCatSpentMonths monthsSpentOnCat
 
 barChartCatSpentMonths :: (Category, [(Month, Money)]) -> String
 barChartCatSpentMonths (cat, monthsSpent) =
