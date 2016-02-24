@@ -52,9 +52,9 @@ factorOutCatMonthsPayments catMonthsPays = let (c, _, _)  = head catMonthsPays
                                                monthsPays = map (\(_, month, paid) -> (month, paid)) catMonthsPays
                                            in (c, monthsPays)
 
--- Percents are approximate so they might NOT add up to 100
 -- OUTPUT: What percent of the total money was spent on each Category
 -- e.g [(food, 25%), (clothes, 34%)]
+-- Percents are approximate so they might NOT add up to 100
 percentPerCategory :: [Payment] -> [(Category, Percent)]
 percentPerCategory payments = let total       = totalPaid payments
                                   totalPerCat = totalPaidPerCategory payments
