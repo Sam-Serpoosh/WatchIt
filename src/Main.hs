@@ -6,6 +6,7 @@ import Category
 import CategoryConfig
 import InputReader
 import Renderer
+import StringUtils (pathDelimiter)
 import Data.List.Split
 import Data.List (intercalate)
 
@@ -48,12 +49,12 @@ main :: IO ()
 main = do
   args <- getArgs
   let action = args !! 0
-  let path   = args !! 1
   if action == detailReport then do
+    let path = args !! 1
     payments <- paymentsOutOfFile path
     generateReport payments
   else do
     let paths  = tail args
-    let months = map (last . splitOn "/") paths
+    let months = map (last . splitOn pathDelimiter) paths
     monthsPayments <- sequence $ map paymentsOutOfFile paths
     putStrLn $ intercalate delimiter $ barChartCategories $ zip months monthsPayments

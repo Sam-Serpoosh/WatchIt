@@ -1,12 +1,13 @@
 module StringUtils where
 
-comma, arrow, chartPixel, colon, emptyString, spaceStr :: String
-comma       = ","
-arrow       = " -> "
-chartPixel  = "#"
-colon       = ": "
-emptyString = ""
-spaceStr    = " "
+comma, arrow, chartPixel, colon, emptyString, spaceStr, pathDelimiter :: String
+comma         = ","
+arrow         = " -> "
+chartPixel    = "#"
+colon         = ": "
+emptyString   = ""
+spaceStr      = " "
+pathDelimiter = "/"
 
 space :: Char
 space = ' '

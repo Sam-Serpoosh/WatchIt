@@ -50,8 +50,9 @@ formatCatAndItsTotalPaid :: Category -> [Payment] -> String
 formatCatAndItsTotalPaid cat payments = (show cat) ++ colon ++ spaceStr ++ (show $ totalPaid payments)
 
 alignPayments :: [Payment] -> [Payment]
-alignPayments payments = let enlargeFactor = maximum $ map (length . description) payments
-                         in map (alignPayment enlargeFactor) payments
+alignPayments payments =
+  let enlargeFactor = maximum $ map (length . description) payments
+  in map (alignPayment enlargeFactor) payments
 
 alignPayment :: Int -> Payment -> Payment
 alignPayment enlargeFactor payment@(Payment { description = oldDesc }) =
@@ -63,9 +64,10 @@ renderWarnings Nothing      = emptyString
 renderWarnings (Just warns) = unlines $ map show (alignWarnings warns)
 
 alignWarnings :: [Warning] -> [Warning]
-alignWarnings warns = let alignedCats  = alignCategories $ map categ warns
-                          zipped       = zip warns alignedCats
-                      in map (\(warn, alignedCat) -> warn { categ = alignedCat }) zipped
+alignWarnings warns =
+  let alignedCats  = alignCategories $ map categ warns
+      zipped       = zip warns alignedCats
+  in map (\(warn, alignedCat) -> warn { categ = alignedCat }) zipped
 
 -- Bar Charts for money spent on each category in different months
 -- Bar Chart for FOOD, for CLOTHES, etc.
@@ -78,9 +80,9 @@ barChartCatSpentMonths :: (Category, [(Month, Money)]) -> String
 barChartCatSpentMonths (cat, monthsSpent) =
   let alignedMonths = alignStrings $ map fst monthsSpent
       barPixels     = map valueToPixel $ map snd monthsSpent
-      zipped        = zip alignedMonths barPixels
-      graphBars     = map (\(month, pix) -> month ++ colon ++ pix) zipped
-  in unlines $ [map toUpper (name cat)] ++ graphBars
+      monthPixels   = zip alignedMonths barPixels
+      graphBars     = map (\(month, pix) -> month ++ colon ++ pix) monthPixels
+  in unlines $ [map toUpper (name cat), emptyString] ++ graphBars
 
 valueToPixel :: Money -> String
 valueToPixel money = intercalate emptyString $ take (ceiling $ money / 50) (repeat chartPixel)

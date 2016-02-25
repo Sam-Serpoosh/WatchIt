@@ -49,4 +49,4 @@ spec = do
           let jan = "jan_2016"
           let aug = "august_2015"
           let catMonthsPays = (food, [(aug, 60), (jan, 120)])
-          barChartCatSpentMonths catMonthsPays `shouldBe` "FOOD\naugust_2015: ##\njan_2016   : ###\n"
+          barChartCatSpentMonths catMonthsPays `shouldBe` "FOOD\n\naugust_2015: ##\njan_2016   : ###\n"
