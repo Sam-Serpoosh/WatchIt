@@ -9,29 +9,20 @@ import Data.List (intercalate)
 chartPaymentsByCat :: [Payment] -> String
 chartPaymentsByCat payments =
   let presentable = presentableChartForCats . percentPerCategory $ payments
-      catsChart   = map joinCategoryAndTags presentable
+      catsChart   = map joinCategoryAndBars presentable
   in unlines catsChart
 
-presentableChartForCats :: [(Category, Percent)] -> [(Category, String)]
+presentableChartForCats :: [(Category, Percent)] -> [(String, String)]
 presentableChartForCats catPercents = 
-  let formattedCats = alignCategories $ map fst catPercents
+  let formattedCats = alignStrings $ map (show . fst) catPercents
       pixels        = map percentToChartPixels $ map snd catPercents
   in zip formattedCats pixels
 
-joinCategoryAndTags :: (Category, String) -> String
-joinCategoryAndTags (cat, tags) = show cat ++ colon ++ tags
-
-alignCategories :: [Category] -> [Category]
-alignCategories cats =
-  let enlargeFactor = maximum $ map (length . name) cats
-  in map (alignCategory enlargeFactor) cats
+joinCategoryAndBars :: (String, String) -> String
+joinCategoryAndBars (cat, bars) = cat ++ colon ++ bars
 
 percentToChartPixels :: Percent -> String
 percentToChartPixels val = intercalate emptyString $ take (ceiling $ val / 10) (repeat chartPixel)
-
-alignCategory :: Int -> Category -> Category
-alignCategory enlargeFactor cat@(Cat { name = oldName }) =
-  cat { name = enlarge enlargeFactor oldName }
 
 --
 renderPaymentsOfCategory :: [(Category, [Payment])] -> Category -> String
@@ -39,7 +30,7 @@ renderPaymentsOfCategory paysPerCat cat =
   let paysOfCat = extractPaymentsOfCat paysPerCat cat
   in case paysOfCat of
     Nothing     -> emptyString
-    (Just pays) -> unlines $ [formatCatAndItsTotalPaid cat pays] ++ map show (alignPayments pays)
+    (Just pays) -> unlines $ [formatCatAndItsTotalPaid cat pays] ++ alignPayments pays
 
 extractPaymentsOfCat :: [(Category, [Payment])] -> Category -> Maybe [Payment]
 extractPaymentsOfCat paysPerCat cat =
@@ -49,25 +40,22 @@ extractPaymentsOfCat paysPerCat cat =
 formatCatAndItsTotalPaid :: Category -> [Payment] -> String
 formatCatAndItsTotalPaid cat payments = (show cat) ++ colon ++ spaceStr ++ (show $ totalPaid payments)
 
-alignPayments :: [Payment] -> [Payment]
+alignPayments :: [Payment] -> [String]
 alignPayments payments =
-  let enlargeFactor = maximum $ map (length . description) payments
-  in map (alignPayment enlargeFactor) payments
-
-alignPayment :: Int -> Payment -> Payment
-alignPayment enlargeFactor payment@(Payment { description = oldDesc }) =
-  payment { description = enlarge enlargeFactor oldDesc }
+  let alignedDesc = alignStrings $ map description payments
+      values      = map (show . value) payments
+  in map (\(desc, val) -> desc ++ arrow ++ val) (zip alignedDesc values)
 
 --
 renderWarnings :: Maybe [Warning] -> String
 renderWarnings Nothing      = emptyString
-renderWarnings (Just warns) = unlines $ map show (alignWarnings warns)
+renderWarnings (Just warns) = unlines $ alignWarnings warns
 
-alignWarnings :: [Warning] -> [Warning]
+alignWarnings :: [Warning] -> [String]
 alignWarnings warns =
-  let alignedCats  = alignCategories $ map categ warns
-      zipped       = zip warns alignedCats
-  in map (\(warn, alignedCat) -> warn { categ = alignedCat }) zipped
+  let alignedCats = alignStrings $ map (show . categ) warns
+      overs       = map (show . overPaid) warns
+  in map (\(cat, over) -> cat ++ arrow ++ over) (zip alignedCats overs)
 
 -- Bar Charts for money spent on each category in different months
 -- Bar Chart for FOOD, for CLOTHES, etc.

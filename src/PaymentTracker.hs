@@ -14,7 +14,6 @@ data Payment = Payment { value       :: Double
                        , category    :: Category
                        , description :: String
                        } deriving (Eq)
-
 instance Show Payment where
   show payment = description payment ++ arrow ++ show (value payment)
 
@@ -35,7 +34,6 @@ data Warning = Warn { categ    :: Category
 
 instance Show Warning where
   show Warn { categ = cat,  overPaid = over } = show cat ++ arrow ++ show over
-
 
 -- INPUT : All payments of each month
 -- OUTPUT: For each Category the total paid value per Month

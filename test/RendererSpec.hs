@@ -29,16 +29,6 @@ spec = do
       it "renders empty string when there is NO warnings" $ do
         renderWarnings Nothing `shouldBe` emptyString
 
-    context "alignPayment" $ do
-      it "aligns payment description based on given enlarging factor" $ do
-        let payment = Payment { value = 10.0, category = fun, description = "movie" }
-        alignPayment 8 payment `shouldBe` Payment { value = 10.0, category = fun, description = "movie   " }
-
-    context "alignCategory" $ do
-      it "aligns category name based on given enlarging factory" $ do
-        let cat = Cat { name = "fun", threshold = 100.0 }
-        alignCategory 5 cat `shouldBe` Cat { name = "fun  ", threshold = 100.0 }
-
     context "Bar Chart for money spent on a category in different months" $ do
       context "valueToPixel" $ do
         it "converts values to pixels for bar chart" $ do
