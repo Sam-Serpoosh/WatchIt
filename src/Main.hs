@@ -1,30 +1,31 @@
 module Main where
 
 import System.Environment
+import System.Directory
 import PaymentTracker
 import Category
 import CategoryConfig
 import InputReader
 import Renderer
-import StringUtils (pathDelimiter)
-import Data.List.Split
-import Data.List (intercalate)
+import Data.List (intercalate, isSuffixOf)
 
-delimiter, separator, detailReport, catOverMonth :: String
-delimiter    = "-------------------------------------------\n"
-separator    = delimiter ++ delimiter ++ delimiter
-detailReport = "detail"
-catOverMonth = "cat-chart"
+delimiter, separator, costs :: String
+delimiter = "-------------------------------------------\n"
+separator = delimiter ++ delimiter ++ delimiter
+costs     = "_costs"
 
 -- Title of Different Sections in the Output
-totalPaidTitle, chartTitle, warningsTitle, catDetailsTitle :: String
-totalPaidTitle  = "* TOTAL PAID *"
-chartTitle      = "* PAYMENTS CHART *"
-warningsTitle   = "!!! WARNINGS !!!"
-catDetailsTitle = "* CATEGORY DETAILS *"
+totalPaidTitle, chartTitle, warningsTitle, catDetailsTitle, catsMonthlyChartTitle :: String
+totalPaidTitle         = "* TOTAL PAID *"
+chartTitle             = "* PAYMENTS CHART *"
+warningsTitle          = "!!! WARNINGS !!!"
+catDetailsTitle        = "* CATEGORY DETAILS *"
+catsMonthlyChartTitle  = "* CATEGORY OVER MONTHS *"
 
-detailsOfCat :: [Payment] -> Category -> String
-detailsOfCat payments cat = renderPaymentsOfCategory (paymentsPerCategory payments) cat
+paymentsOutOfFile :: FilePath -> IO [Payment]
+paymentsOutOfFile path = do
+  content <- readFile path
+  return $ contentToPayments content
 
 generateReport :: [Payment] -> IO ()
 generateReport payments = do
@@ -40,21 +41,27 @@ generateReport payments = do
   putStrLn catDetailsTitle
   putStrLn $ intercalate delimiter $ map (detailsOfCat payments) validCategories
 
-paymentsOutOfFile :: FilePath -> IO [Payment]
-paymentsOutOfFile path = do
-  content <- readFile path
-  return $ contentToPayments content
+detailsOfCat :: [Payment] -> Category -> String
+detailsOfCat payments cat = renderPaymentsOfCategory (paymentsPerCategory payments) cat
 
+drawCatsMonthlySpentChart :: [String] -> [[Payment]] -> IO ()
+drawCatsMonthlySpentChart months monthsPayments = do
+  putStrLn catsMonthlyChartTitle
+  putStrLn $ intercalate delimiter $ barChartCategories $ zip months monthsPayments
+
+-- TWO INPUT ARGS:
+-- payment-file-for-detail-report
+-- payments-dir-for-bar-charts-of-categories-over-months
 main :: IO ()
 main = do
   args <- getArgs
-  let action = args !! 0
-  if action == detailReport then do
-    let path = args !! 1
-    payments <- paymentsOutOfFile path
-    generateReport payments
-  else do
-    let paths  = tail args
-    let months = map (last . splitOn pathDelimiter) paths
-    monthsPayments <- sequence $ map paymentsOutOfFile paths
-    putStrLn $ intercalate delimiter $ barChartCategories $ zip months monthsPayments
+  let currFile   = args !! 0
+  let paymentDir = args !! 1
+  currPayments <- paymentsOutOfFile currFile
+  payFiles     <- getDirectoryContents paymentDir
+  let months    = filter (isSuffixOf costs) payFiles
+  let costFiles = map (paymentDir ++) months
+  monthsPayments <- sequence $ map paymentsOutOfFile costFiles
+  generateReport currPayments
+  putStrLn separator
+  drawCatsMonthlySpentChart months monthsPayments

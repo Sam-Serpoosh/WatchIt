@@ -10,13 +10,12 @@ main() {
 }
 
 arg_check() {
-  if [ $# -lt 2 ]
+  if [ $# -ne 2 ]
   then
     echo "NO Arguments Provided!"
-    echo "Usage: ./generate_report.sh <action> <payment-file[s]>"
-    echo "<action>: detail | cat-chart"
-    echo "detail    -> ONE payment file"
-    echo "cat-chart -> MULTIPLE payment files"
+    echo "Usage: ./generate_report.sh <payment-file> <payments-directory>"
+    echo "<payment-file>      : payments/jan_2016_costs"
+    echo "<paymetns-directory>: payments"
     exit 1
   fi
 }
