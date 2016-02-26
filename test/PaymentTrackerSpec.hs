@@ -31,6 +31,17 @@ spec = do
       it "knows when there is NO warning required" $ do
         warnings payments `shouldBe` Nothing
 
+    context "sortAndLabelMonthsPayments" $ do
+      it "sorts based on datetime and label payments of months" $ do
+        let months   = ["jan_2016_costs", "aug_2015_costs", "dec_2015_costs"]
+        let payments = [[chicken, uberToWork], [kebob, priceyClothes], [uberToAirport]]
+        let sortedAndLabeled = sortAndLabelMonthsPayments months payments
+        sortedAndLabeled `shouldBe` [
+                                      ("August_2015", [kebob, priceyClothes]),
+                                      ("December_2015", [uberToAirport]),
+                                      ("January_2016", [chicken, uberToWork])
+                                    ]
+
     context "Paid Money for Each Category over Months" $ do
       let jan = "jan_2016"
       let feb = "feb_2016"
@@ -56,3 +67,4 @@ spec = do
         it "collects value paid in different months for each category" $ do
           let monthsPayments = [(jan, [chicken, uberToWork, kebob]), (feb, [uberToAirport, kebob, chicken, kebob])]
           categoryPaidOverMonths monthsPayments `shouldBe` [(food, [(jan, 30), (feb, 50)]), (transportation, [(jan, 11), (feb, 60)])]
+

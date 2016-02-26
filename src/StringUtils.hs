@@ -4,7 +4,7 @@ import qualified Data.Map as DM
 import System.Time
 import Data.List.Split
 
-comma, arrow, chartPixel, colon, emptyString, spaceStr, pathDelimiter :: String
+comma, arrow, chartPixel, colon, emptyString, spaceStr, pathDelimiter, monthYearDelim :: String
 comma          = ","
 arrow          = " -> "
 chartPixel     = "#"
@@ -32,9 +32,9 @@ getMonthByName monName =
     Nothing    -> January
     (Just mon) -> mon
 
--- Only care about Month & Year in this context so rest of values are dummy values
-createCalTime :: Month -> Int -> CalendarTime
-createCalTime month year = CalendarTime year month 1 0 0 0 0 Sunday 0 "UTC" 0 False
+-- Only care about Month & Year in this context so rest of values are dummy
+createCalTime :: (Month, Int) -> CalendarTime
+createCalTime (month, year) = CalendarTime year month 1 0 0 0 0 Sunday 0 "UTC" 0 False
 
 -- INPUT : String in the form of mon_year_costs (e.g jan_2016_costs)
 -- OUTPUT: Tuple of Month & Year
@@ -43,8 +43,8 @@ extractMonthAndYear monthYear =
   let (mon:year:_) = splitOn monthYearDelim monthYear
   in (getMonthByName mon, read year :: Int)
 
-monthYearToLabel :: (Month, Int) -> String
-monthYearToLabel (month, year) = show month ++ monthYearDelim ++ show year
+calTimeToLabel :: CalendarTime -> String
+calTimeToLabel calTime = show (ctMonth calTime) ++ monthYearDelim ++ show (ctYear calTime)
 
 alignStrings :: [String] -> [String]
 alignStrings strs =
@@ -55,4 +55,4 @@ alignStrings strs =
 enlarge :: Int -> String -> String
 enlarge len str =
   let remainder = len - (length str)
-  in str ++ (take remainder (repeat space))
+  in str ++ take remainder (repeat space)

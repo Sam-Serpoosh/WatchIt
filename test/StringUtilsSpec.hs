@@ -29,6 +29,7 @@ spec = do
       it "extracts month and year values" $ do
         extractMonthAndYear "feb_2016_costs" `shouldBe` (February, 2016)
 
-    context "monthYearToLabel" $ do
+    context "calTimeToLabel" $ do
       it "shapes the label" $ do
-        monthYearToLabel (January, 2016) `shouldBe` "January_2016"
+        let calTime = createCalTime (January, 2016)
+        calTimeToLabel calTime  `shouldBe` "January_2016"

@@ -8,7 +8,6 @@ import Data.Ord (comparing)
 
 type Overpaid = Double
 type Percent  = Double
-type Month    = String
 
 data Payment = Payment { value       :: Double
                        , category    :: Category
@@ -35,23 +34,30 @@ data Warning = Warn { categ    :: Category
 instance Show Warning where
   show Warn { categ = cat,  overPaid = over } = show cat ++ arrow ++ show over
 
+-- Sort & Rearrange Payments based on Calendar DateTime they belong to
+sortAndLabelMonthsPayments :: [String] -> [[Payment]] ->  [(String, [Payment])]
+sortAndLabelMonthsPayments months monthsPayments =
+  let calTimes       = map (createCalTime . extractMonthAndYear) months
+      sortedPayments = sortBy (comparing fst) $ zip calTimes monthsPayments
+  in map (\(cTime, payments) -> (calTimeToLabel cTime, payments)) sortedPayments
+
 -- INPUT : All payments of each month
 -- OUTPUT: For each Category the total paid value per Month
 -- e.g [(food, [(jan_2016, 100), (feb_2016, 150)]), (clothes, [(jan_2016, 150), (feb_2016, 200)])]
-categoryPaidOverMonths :: [(Month, [Payment])] -> [(Category, [(Month, Money)])]
+categoryPaidOverMonths :: [(String, [Payment])] -> [(Category, [(String, Money)])]
 categoryPaidOverMonths monthsPayments =
   let categoriesMonthPaid = map totalPaidInMonthCategories monthsPayments
       allMonthsPaidCats   = foldl (++) [] categoriesMonthPaid
       monthsPaymentsByCat = groupMonthsPaymentsByCat allMonthsPaidCats
   in map factorOutCatMonthsPayments monthsPaymentsByCat
 
-totalPaidInMonthCategories :: (Month, [Payment]) -> [(Category, Month, Money)]
+totalPaidInMonthCategories :: (String, [Payment]) -> [(Category, String, Money)]
 totalPaidInMonthCategories (m, ps) = map (\(cat, paid) -> (cat, m, paid)) $ totalPaidPerCategory ps
 
-groupMonthsPaymentsByCat :: [(Category, Month, Money)] -> [[(Category, Month, Money)]]
+groupMonthsPaymentsByCat :: [(Category, String, Money)] -> [[(Category, String, Money)]]
 groupMonthsPaymentsByCat = groupBy (\(c1, _, _) (c2, _, _) -> c1 == c2) . sortBy (comparing (\(c, _, _) -> c))
 
-factorOutCatMonthsPayments :: [(Category, Month, Money)] -> (Category, [(Month, Money)])
+factorOutCatMonthsPayments :: [(Category, String, Money)] -> (Category, [(String, Money)])
 factorOutCatMonthsPayments catMonthsPays =
   let (c, _, _)  = head catMonthsPays
       monthsPays = map (\(_, month, paid) -> (month, paid)) catMonthsPays

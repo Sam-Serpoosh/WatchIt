@@ -47,7 +47,7 @@ detailsOfCat payments cat = renderPaymentsOfCategory (paymentsPerCategory paymen
 drawCatsMonthlySpentChart :: [String] -> [[Payment]] -> IO ()
 drawCatsMonthlySpentChart months monthsPayments = do
   putStrLn catsMonthlyChartTitle
-  putStrLn $ intercalate delimiter $ barChartCategories $ zip months monthsPayments
+  putStrLn $ intercalate delimiter $ barChartCategories $ sortAndLabelMonthsPayments months monthsPayments
 
 -- TWO INPUT ARGS:
 -- payment-file-for-detail-report
