@@ -21,7 +21,7 @@ arg_check() {
 }
 
 build() {
-  /usr/bin/cabal build
+  /usr/local/bin/cabal build
 }
 
 generate_report() {
